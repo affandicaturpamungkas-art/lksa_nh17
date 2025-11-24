@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $natura = $_POST['natura'] ?? '';
     // Metode_Pembayaran dihapus
     $tgl_trans = date('Y-m-d'); 
-    $status_verifikasi = 'Menunggu Verifikasi'; // Status default
+    $status_verifikasi = 'Belum Terverifikasi'; // PERBAIKAN: Disamakan persis dengan nilai ENUM di database
 
     // Membuat ID Kwitansi yang unik sesuai format KWZIS_thbltgl_XXX
     $tgl_kwitansi = date('ymd');

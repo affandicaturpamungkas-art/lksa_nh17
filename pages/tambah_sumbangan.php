@@ -169,16 +169,9 @@ include '../includes/header.php'; // LOKASI BARU
         <div class="form-section">
             <h2><i class="fas fa-handshake"></i> Detail Transaksi & Donatur</h2>
             <div class="form-grid">
-                 <div class="form-group">
+                 <div class="form-group" style="grid-column: span 2;">
                     <label>Tanggal Transaksi (Otomatis Hari Ini):</label>
                     <input type="text" value="<?php echo date('d F Y'); ?>" readonly style="background-color: #e9ecef; font-weight: 600;">
-                </div>
-                <div class="form-group">
-                    <label>Metode Pembayaran:</label>
-                    <select name="metode_pembayaran" required>
-                        <option value="Tunai">Tunai</option>
-                        <option value="Transfer Bank">Transfer Bank</option>
-                    </select>
                 </div>
             </div>
             
