@@ -127,7 +127,8 @@ if ($is_donatur_logged_in) {
         .form-group input[type="text"], 
         .form-group input[type="email"], 
         .form-group select, 
-        .form-group textarea {
+        .form-group textarea,
+        .form-group input[type="date"] {
             /* PERBAIKAN PADDING INPUT */
             padding: 12px; /* Dikecilkan dari 14px */
             border: 1px solid #e0e0e0;
@@ -337,11 +338,18 @@ if ($is_donatur_logged_in) {
                     </div>
                     <div class="form-group">
                         <label>Status Donasi:</label>
-                        <select name="status_donasi">
+                        <select name="status_donasi" id="statusDonasi" required>
                             <option value="Rutin" <?php echo ($data_donatur['Status'] == 'Rutin') ? 'selected' : ''; ?>>Rutin</option>
                             <option value="Insidental" <?php echo ($data_donatur['Status'] == 'Insidental') ? 'selected' : ''; ?>>Insidental</option>
                         </select>
                     </div>
+                    
+                    <div class="form-group" id="tglRutinitasGroup" style="display: <?php echo ($data_donatur['Status'] == 'Rutin') ? 'block' : 'none'; ?>;">
+                        <label>Tanggal Rutinitas:</label>
+                        <input type="date" name="tgl_rutinitas" value="<?php echo htmlspecialchars($data_donatur['Tgl_Rutinitas']); ?>" <?php echo ($data_donatur['Status'] == 'Rutin') ? 'required' : ''; ?>>
+                        <small style="color: #7f8c8d; display: block; margin-top: 5px;">Diisi jika status donasi adalah Rutin.</small>
+                    </div>
+
                 </div>
             </div>
             
@@ -360,6 +368,34 @@ if ($is_donatur_logged_in) {
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusSelect = document.getElementById('statusDonasi');
+    const tglRutinitasGroup = document.getElementById('tglRutinitasGroup');
+    // Pastikan elemen ditemukan sebelum memproses lebih lanjut
+    const tglRutinitasInput = tglRutinitasGroup ? tglRutinitasGroup.querySelector('input[name="tgl_rutinitas"]') : null;
+
+    if (!statusSelect || !tglRutinitasGroup || !tglRutinitasInput) return;
+
+    function toggleTglRutinitas() {
+        if (statusSelect.value === 'Rutin') {
+            tglRutinitasGroup.style.display = 'block';
+            tglRutinitasInput.required = true;
+        } else {
+            tglRutinitasGroup.style.display = 'none';
+            tglRutinitasInput.required = false;
+        }
+    }
+
+    // Panggil fungsi untuk mengatur status awal saat DOM dimuat
+    // Status awal sudah diatur oleh PHP, ini hanya untuk memastikan konsistensi
+    toggleTglRutinitas(); 
+
+    // Tambahkan event listener untuk perubahan pada dropdown
+    statusSelect.addEventListener('change', toggleTglRutinitas);
+});
+</script>
 
 <?php
 if ($is_donatur_logged_in) {

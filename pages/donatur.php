@@ -5,14 +5,13 @@ include '../config/database.php';
 // Authorization check: Semua yang terkait dengan donasi ZIS
 $jabatan = $_SESSION['jabatan'] ?? '';
 $id_lksa = $_SESSION['id_lksa'] ?? '';
-if (!in_array($jabatan, ['Pimpinan', 'Kepala LKSA', 'Pegawai'])) { //
+if (!in_array($jabatan, ['Pimpinan', 'Kepala LKSA', 'Pegawai'])) {
     die("Akses ditolak.");
 }
 
-// --- FUNGSI BARU UNTUK FORMAT TANGGAL ---
+// --- FUNGSI UNTUK FORMAT TANGGAL ---
 function format_tanggal_indo($date_string) {
     if (!$date_string || $date_string === '0000-00-00') return '-';
-    // Hanya mengembalikan tanggal d-m-Y jika ada
     return date('d-m-Y', strtotime($date_string));
 }
 // ------------------------------------------
@@ -33,7 +32,7 @@ $types = "";
 
 if ($jabatan != 'Pimpinan' || $id_lksa != 'Pimpinan_Pusat') {
     // Perbaikan SQLI: Menggunakan placeholder
-    $sql .= " AND d.ID_LKSA = ?"; //
+    $sql .= " AND d.ID_LKSA = ?";
     $params[] = $id_lksa;
     $types .= "s";
 }
@@ -49,7 +48,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
 
-// Set sidebar stats ke string kosong agar sidebar tetap tampil
 $sidebar_stats = '';
 
 include '../includes/header.php';
@@ -59,17 +57,17 @@ include '../includes/header.php';
     :root {
         --primary-color: #1F2937;
         --accent-donatur: #10B981; /* Emerald Green */
-        --preview-color: #10B981; /* Cyan/Aqua -> Emerald */
+        --preview-color: #059669; /* Darker Emerald Green untuk Detail */
         --archive-color: #EF4444;
-        --accent-secondary: #0c9c6f; /* Orange -> Medium Emerald (Arsip Link) */
+        --accent-secondary: #0c9c6f; 
         --border-color: #E5E7EB;
         --text-color: #374151;
-        --bg-hover-soft: #ECFDF5; /* Very Light Green/Cyan */
+        --bg-hover-soft: #ECFDF5;
     }
     
     /* Tombol Aksi Ikon Only (Kecil) */
     .btn-action-icon {
-        padding: 4px 6px; /* Padding sangat kecil */
+        padding: 4px 6px;
         width: 30px; 
         height: 30px; 
         margin: 0 1px; 
@@ -81,12 +79,15 @@ include '../includes/header.php';
         box-shadow: none; 
         border: 1px solid transparent; 
         text-decoration: none;
+        transition: background-color 0.2s, opacity 0.2s;
     }
     .btn-action-icon span { display: none; }
     
+    /* Warna Detail (Hijau) */
     .btn-preview-custom { background-color: var(--preview-color); color: white; }
     .btn-preview-custom:hover { opacity: 0.85; border: 1px solid white; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
     
+    /* Warna Arsip (Merah) */
     .btn-archive-custom { background-color: var(--archive-color); color: white; }
     .btn-archive-custom:hover { opacity: 0.85; border: 1px solid white; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
 
@@ -105,7 +106,7 @@ include '../includes/header.php';
         table-layout: auto;
     }
     .responsive-table thead tr {
-        background-color: var(--accent-donatur); /* Header Emerald Green */
+        background-color: var(--accent-donatur);
         color: white;
     }
     .responsive-table th {
@@ -200,14 +201,16 @@ include '../includes/header.php';
                     <td data-label="Kabupaten/Kota"><?php echo $row['Kabupaten'] ?? '-'; ?></td>
                     <td data-label="No. WA"><?php echo $row['NO_WA']; ?></td>
                     <td data-label="Dibuat Oleh"><?php echo $row['Nama_User']; ?></td>
+                    
                     <td data-label="Aksi" style="white-space: nowrap; text-align: center;">
                         
-                        <a href="edit_donatur.php?id=<?php echo $row['ID_donatur']; ?>" 
+                        <a href="detail_donatur.php?id=<?php echo $row['ID_donatur']; ?>" 
                            class="btn btn-action-icon btn-preview-custom" 
-                           title="Preview/Edit Data">
+                           title="Lihat Detail Donatur">
                             <i class="fas fa-eye"></i>
-                            <span>Preview</span>
+                            <span>Detail</span>
                         </a>
+
                         <a href="proses_arsip_donatur.php?id=<?php echo $row['ID_donatur']; ?>" 
                            class="btn btn-action-icon btn-archive-custom" 
                            onclick="return confirm('Apakah Anda yakin ingin mengarsipkan donatur ini?');" 
@@ -216,7 +219,7 @@ include '../includes/header.php';
                             <span>Arsipkan</span>
                         </a>
                     </td>
-                </tr>
+                    </tr>
             <?php } ?>
         </tbody>
     </table>
